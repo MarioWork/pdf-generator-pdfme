@@ -1,12 +1,12 @@
 import Fastify from "fastify";
 import { type Template } from "@pdfme/common";
 import { generate } from "@pdfme/generator";
-import { text, image } from "@pdfme/schemas";
-import templateJson from "./template.json" assert { type: "json" };
+import { text, image, barcodes } from "@pdfme/schemas";
+import templateJson from "./template.json";
 
 const template: Template = templateJson as Template;
 
-const plugins = { text, image };
+const plugins = { text, image, ean13: barcodes.ean13 };
 
 const inputs = [
   {
@@ -18,7 +18,12 @@ const inputs = [
 const server = Fastify();
 
 server.get("/", async (request, reply) => {
+  const startTime = new Date().getTime();
+
   const pdf = await generate({ template, inputs, plugins });
+
+  const endTime = new Date().getTime();
+  console.log(endTime - startTime);
 
   reply
     .header("Content-Type", "application/pdf")
