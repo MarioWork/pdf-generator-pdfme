@@ -22,6 +22,12 @@ server.get("/", async (request, reply) => {
     .send(pdf);
 });
 
+// Cleanup on Fastify shutdown
+server.addHook("onClose", async () => {
+  console.log("Shutting down Piscina...");
+  await pool.destroy();
+});
+
 const start = async () => {
   try {
     await server.listen({ port: 3000 });
