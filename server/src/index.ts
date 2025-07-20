@@ -1,13 +1,14 @@
 import Fastify from "fastify";
-import path from "path";
 import { fileURLToPath } from "url";
 import { Piscina } from "piscina";
+import { dirname, join } from "path";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+//Use when building for prodf
+//const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// Piscina pool setup
 const pool = new Piscina({
-  filename: path.resolve(__dirname, "pdf-worker.js"),
+  filename: new URL("./pdf-worker.ts", import.meta.url).href,
 });
 
 const server = Fastify();
